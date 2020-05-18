@@ -6,6 +6,7 @@ class Student(NamedTuple):
     first_name: str
     last_name: str
     telegram_account: Optional[str]
+    telegram_chat_id: Optional[str]
     phone_number: Optional[str]
     knowledge_description: str
     purpose: Optional[str]
