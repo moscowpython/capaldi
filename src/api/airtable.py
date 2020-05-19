@@ -1,7 +1,7 @@
 import os
 from typing import List, Any, Mapping, NamedTuple
 
-from requests import get, patch
+from requests import get, patch, post
 
 from common_types import Student
 from config import AIRTABLE_VIEW_NAME
@@ -31,6 +31,7 @@ class AirtableAPI(NamedTuple):
             knowledge_description=raw_airtable_record['fields']['knowledge_description'],
             purpose=raw_airtable_record['fields'].get('purpose'),
             airtable_id=raw_airtable_record['id'],
+            airtable_pk=raw_airtable_record['fields']['PK'],
         )
 
     def fetch_students_data_from_airtable(self) -> List[Mapping[str, Any]]:
@@ -52,3 +53,24 @@ class AirtableAPI(NamedTuple):
             json={'records': [{'id': student_airtable_id, 'fields': {'chat_id': str(telegram_chat_id)}}]},
         ).json()
         return self._extract_student_record(response['records'][0])
+
+    def student_has_feedback_for_week(self, week_num, student_airtable_pk) -> bool:
+        airtable_response = get(
+            f'https://api.airtable.com/v0/{self.airtable_base_id}/weekly_feedback',
+            params={'filterByFormula': f'AND(student={student_airtable_pk},week_num={week_num})'},
+            headers={'Authorization': f'Bearer {self.airtable_api_token}'},
+        ).json()
+        return bool(airtable_response['records'])
+
+    def save_feedback(self, student_airtable_id, week_num, is_liked) -> None:
+        post(
+            f'https://api.airtable.com/v0/{self.airtable_base_id}/weekly_feedback',
+            headers={'Authorization': f'Bearer {self.airtable_api_token}'},
+            json={'records': [
+                {'fields': {
+                    'student': [student_airtable_id],
+                    'week_num': week_num,
+                    'liked': is_liked,
+                }},
+            ]},
+        ).json()

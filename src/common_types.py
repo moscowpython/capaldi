@@ -11,6 +11,7 @@ class Student(NamedTuple):
     knowledge_description: str
     purpose: Optional[str]
     airtable_id: str
+    airtable_pk: int
 
     @property
     def is_telegram_account_valid(self) -> bool:

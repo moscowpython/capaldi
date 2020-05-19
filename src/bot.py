@@ -2,7 +2,7 @@ import logging
 import os
 
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
 from api.airtable import AirtableAPI
 from utils.students import get_student_by_tg_nickname
@@ -25,7 +25,7 @@ def start(update: Update, context: CallbackContext) -> None:
     student = get_student_by_tg_nickname(update._effective_chat.username, STUDENTS)
     if student is None:
         update.message.reply_text(
-            f'Кажется, вы не учитесь на текущем наборе. Если это не так, то покажите '
+            f'Кажется, ты не учишься на текущем наборе. Если это не так, то покажите '
             f'это сообщение кому-нибудь из администрации ({update._effective_chat.username})',
         )
         return None
@@ -39,6 +39,29 @@ def start(update: Update, context: CallbackContext) -> None:
         f'{student.first_name}, привет! Давай общаться. '
         f'Я буду иногда писать и спрашивать всякое.',
     )
+
+
+def process_feedback(update: Update, context: CallbackContext) -> None:
+    answers_map = {'yay': True, 'fuu': False}
+    student = get_student_by_tg_nickname(update._effective_chat.username, STUDENTS)
+    if student is None:
+        update.message.reply_text(
+            f'Кажется, ты не учишься на текущем наборе. Если это не так, то покажите '
+            f'это сообщение кому-нибудь из администрации ({update._effective_chat.username})',
+        )
+        return None
+    raw_response_text = update.callback_query.data
+    week_num_str, raw_answer = raw_response_text.lstrip('w').split('_')
+    week_num = int(week_num_str)
+    if AIRTABLE_API.student_has_feedback_for_week(week_num, student.airtable_pk):
+        response_text = f'Кажется, у нас уже есть твой фидбек за неделю {week_num}'
+    else:
+        AIRTABLE_API.save_feedback(student.airtable_id, week_num, answers_map[raw_answer])
+        answer_text = 'понравилась' if answers_map[raw_answer] else 'не понравилась'
+        response_text = f'Записал, что тебе {answer_text} неделя {week_num}. Спасибо за честность.'
+    query = update.callback_query
+    query.answer()
+    query.edit_message_text(text=response_text)
 
 
 def error(update: Update, context: CallbackContext) -> None:
@@ -61,6 +84,7 @@ def main() -> None:
 
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CallbackQueryHandler(process_feedback))
     dp.add_error_handler(error)
     updater.start_polling()
     updater.idle()
