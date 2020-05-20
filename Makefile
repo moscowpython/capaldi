@@ -1,3 +1,3 @@
 check:
-	flake8 src
-	mypy src
+	flake8 learn_python_bot
+	mypy learn_python_bot

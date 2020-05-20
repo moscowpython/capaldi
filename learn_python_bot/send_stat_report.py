@@ -1,10 +1,10 @@
 from typing import NamedTuple, Mapping, Any, List
 
-from api.airtable import AirtableAPI
-from api.telegram import get_bot
 from click import command, option
 
-from config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
+from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.api.telegram import get_bot
+from learn_python_bot.config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
 
 
 class FeedbackStatistics(NamedTuple):

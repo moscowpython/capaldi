@@ -1,4 +1,6 @@
 python-telegram-bot[socks]==12.7
+click==7.1.2
+requests==2.23.0
 
 mypy==0.770
 mypy-extensions==0.4.3

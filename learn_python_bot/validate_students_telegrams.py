@@ -1,7 +1,7 @@
 import os
 
-from api.airtable import AirtableAPI
-from config import AIRTABLE_VIEW_NAME
+from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.config import AIRTABLE_VIEW_NAME
 
 
 if __name__ == '__main__':

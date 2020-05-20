@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from common_types import Student
+from learn_python_bot.common_types import Student
 
 
 def get_student_by_tg_nickname(

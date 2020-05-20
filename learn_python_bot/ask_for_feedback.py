@@ -1,8 +1,8 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from api.telegram import get_bot
-from common_types import Student
-from config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
+from learn_python_bot.api.telegram import get_bot
+from learn_python_bot.common_types import Student
+from learn_python_bot.config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
 
 
 def ask_for_feedback(
@@ -23,7 +23,7 @@ def ask_for_feedback(
     )
 
 
-if __name__ == '__main__':
+def main() -> None:
     ask_for_feedback(
         student=Student(
             first_name='Илья',
@@ -39,3 +39,7 @@ if __name__ == '__main__':
         telegram_chat_id='187804971',
         week_num=2,
     )
+
+
+if __name__ == '__main__':
+    main()

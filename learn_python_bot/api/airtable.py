@@ -3,8 +3,8 @@ from typing import List, Any, Mapping, NamedTuple
 
 from requests import get, patch, post
 
-from common_types import Student
-from config import AIRTABLE_VIEW_NAME
+from learn_python_bot.common_types import Student
+from learn_python_bot.config import AIRTABLE_VIEW_NAME
 
 
 class AirtableAPI(NamedTuple):

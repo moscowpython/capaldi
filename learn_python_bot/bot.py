@@ -4,8 +4,8 @@ import os
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
-from api.airtable import AirtableAPI
-from utils.students import get_student_by_tg_nickname
+from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.utils.students import get_student_by_tg_nickname
 
 
 logging.basicConfig(
