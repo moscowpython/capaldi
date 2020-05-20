@@ -7,6 +7,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 from api.airtable import AirtableAPI
 from utils.students import get_student_by_tg_nickname
 
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO,

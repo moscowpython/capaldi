@@ -74,3 +74,11 @@ class AirtableAPI(NamedTuple):
                 }},
             ]},
         ).json()
+
+    def fetch_feedback_for_week(self, course_week_num: int) -> List[Mapping[str, Any]]:
+        airtable_response = get(
+            f'https://api.airtable.com/v0/{self.airtable_base_id}/weekly_feedback',
+            params={'filterByFormula': f'week_num={course_week_num}'},
+            headers={'Authorization': f'Bearer {self.airtable_api_token}'},
+        ).json()
+        return airtable_response['records']
