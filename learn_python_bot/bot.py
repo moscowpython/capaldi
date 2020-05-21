@@ -38,7 +38,10 @@ def start(update: Update, context: CallbackContext) -> None:
             f'Кажется, мы с вами уже знакомы. Привет, {student.first_name}.',
         )
         return None
-    AIRTABLE_API.set_telegram_chat_id(student.airtable_id, update._effective_chat.id)
+    new_student = AIRTABLE_API.set_telegram_chat_id(student.airtable_id, update._effective_chat.id)
+    if new_student:
+        STUDENTS.remove(student)
+        STUDENTS.append(new_student)
     update.message.reply_text(
         f'{student.first_name}, привет! Давай общаться. '
         f'Я буду иногда писать и спрашивать всякое.',
