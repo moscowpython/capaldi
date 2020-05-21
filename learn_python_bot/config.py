@@ -11,3 +11,4 @@ TELEGRAM_PROXY_SETTINGS = {
         'password': os.environ['TELEGRAM_PROXY_PASSWORD'],
     },
 }
+TELEGRAM_ADMIN_USERNAME = os.environ.get('TELEGRAM_ADMIN_USERNAME', '@melevir')

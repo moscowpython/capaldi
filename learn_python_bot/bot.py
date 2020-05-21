@@ -1,9 +1,12 @@
 import logging
 import os
+import sys
+from threading import Thread
 
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, Filters
 
+from config import TELEGRAM_ADMIN_USERNAME
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.utils.students import get_student_by_tg_nickname
 
@@ -83,8 +86,22 @@ def main() -> None:
         request_kwargs=proxy_settings,
     )
 
+    def stop_and_restart() -> None:
+        """Gracefully stop the Updater and replace the current process with a new one."""
+        updater.stop()
+        os.execl(sys.executable, sys.executable, *sys.argv)
+
+    def restart(update: Update, context: CallbackContext) -> None:
+        update.message.reply_text('Bot is restarting...')
+        Thread(target=stop_and_restart).start()
+
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler(
+        'restart',
+        restart,
+        filters=Filters.user(username=TELEGRAM_ADMIN_USERNAME),
+    ))
     dp.add_handler(CallbackQueryHandler(process_feedback))
     dp.add_error_handler(error)
     updater.start_polling()
