@@ -6,7 +6,7 @@ from threading import Thread
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, Filters
 
-from config import TELEGRAM_ADMIN_USERNAME
+from config import TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.utils.students import get_student_by_tg_nickname
 
@@ -76,17 +76,10 @@ def error(update: Update, context: CallbackContext) -> None:
 
 
 def main() -> None:
-    proxy_settings = {
-        'proxy_url': os.environ['TELEGRAM_PROXY_URL'],
-        'urllib3_proxy_kwargs': {
-            'username': os.environ['TELEGRAM_PROXY_LOGIN'],
-            'password': os.environ['TELEGRAM_PROXY_PASSWORD'],
-        },
-    }
     updater = Updater(
-        os.environ['TELEGRAM_BOT_TOKEN'],
+        TELEGRAM_BOT_TOKEN,
         use_context=True,
-        request_kwargs=proxy_settings,
+        request_kwargs=TELEGRAM_PROXY_SETTINGS,
     )
 
     def stop_and_restart() -> None:

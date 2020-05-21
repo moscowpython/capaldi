@@ -1,15 +1,8 @@
-import os
-
 from learn_python_bot.api.airtable import AirtableAPI
-from learn_python_bot.config import AIRTABLE_VIEW_NAME
 
 
 if __name__ == '__main__':
-    api = AirtableAPI(
-        airtable_api_token=os.environ['AIRTABLE_API_KEY'],
-        airtable_base_id=os.environ['AIRTABLE_BASE_ID'],
-        students_list_view_name=AIRTABLE_VIEW_NAME,
-    )
+    api = AirtableAPI.get_default_api()
     students = api.extract_students(api.fetch_students_data_from_airtable())
 
     for student in students:
