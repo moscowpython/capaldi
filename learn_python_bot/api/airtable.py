@@ -4,7 +4,7 @@ from typing import List, Any, Mapping, NamedTuple, Optional
 from requests import get, patch, post
 
 from learn_python_bot.common_types import Student
-from learn_python_bot.config import AIRTABLE_VIEW_NAME
+from learn_python_bot.config import AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE
 
 
 class AirtableAPI(NamedTuple):
@@ -94,12 +94,17 @@ class AirtableAPI(NamedTuple):
         method='get',
         params=None,
         json=None,
+        retries_number=5,
     ) -> Optional[Mapping[str, Any]]:
         methods_map = {f.__name__: f for f in [get, post, patch]}
-        airtable_response = methods_map[method](  # type: ignore
-            f'https://api.airtable.com/v0/{self.airtable_base_id}/{table_name}',
-            params=params or {},
-            headers={'Authorization': f'Bearer {self.airtable_api_token}'},
-            json=json or None,
-        )
+        airtable_response = None
+        for _ in range(retries_number):
+            airtable_response = methods_map[method](  # type: ignore
+                f'https://api.airtable.com/v0/{self.airtable_base_id}/{table_name}',
+                params=params or {},
+                headers={'Authorization': f'Bearer {self.airtable_api_token}'},
+                json=json or None,
+            )
+            if airtable_response.status_code != AIRTABLE_RATE_LIMIT_STATUS_CODE:
+                break
         return airtable_response.json() if airtable_response else None
