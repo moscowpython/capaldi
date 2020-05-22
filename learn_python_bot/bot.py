@@ -6,7 +6,7 @@ from threading import Thread
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, Filters
 
-from config import TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN
+from learn_python_bot.config import TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.utils.students import get_student_by_tg_nickname
 
