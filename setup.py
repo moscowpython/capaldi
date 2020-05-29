@@ -42,6 +42,7 @@ setup(
         'click>=7.1.2',
         'requests>=2.23.0',
         'dateparser>=0.7.4',
+        'wrapt==1.12.1',
     ],
     entry_points={
         'console_scripts': [

@@ -106,6 +106,18 @@ class AirtableAPI(NamedTuple):
 
         return raw_airtable_data['records'] if raw_airtable_data else []
 
+    def save_feedback_on_demand(self, feedback_text: str, student: Student) -> None:
+        self._make_airtable_request(
+            'feedback_on_demand',
+            method='post',
+            json={'records': [
+                {'fields': {
+                    'student': [student.airtable_id],
+                    'text': feedback_text,
+                }},
+            ]},
+        )
+
     def _make_airtable_request(
         self,
         table_name,

@@ -2,22 +2,33 @@ import logging
 import os
 import sys
 from threading import Thread
+from typing import Any, Callable
 
+import wrapt
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, Filters
+from telegram.ext import (
+    Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
+    Filters, ConversationHandler, MessageHandler,
+)
 
-from learn_python_bot.config import TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN
+from learn_python_bot.common_types import Student
+from learn_python_bot.config import (
+    TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN,
+    TELERGAM_ORGS_CHAT_ID,
+)
 from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.typical_responses import not_a_student
 from learn_python_bot.utils.students import get_student_by_tg_nickname
 
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
+    level=logging.DEBUG,
 )
 
 logger = logging.getLogger(__name__)
 
+GETTING_FEEDBACK = 1
 
 AIRTABLE_API = AirtableAPI.get_default_api()
 STUDENTS = AIRTABLE_API.extract_students(
@@ -25,14 +36,19 @@ STUDENTS = AIRTABLE_API.extract_students(
 )
 
 
-def start(update: Update, context: CallbackContext) -> None:
+@wrapt.decorator
+def for_students_only(wrapped: Callable, instance: Any, args: Any, kwargs: Any) -> Any:
+    update = args[0]
     student = get_student_by_tg_nickname(update._effective_chat.username, STUDENTS)
     if student is None:
-        update.message.reply_text(
-            f'Кажется, ты не учишься на текущем наборе. Если это не так, то покажите '
-            f'это сообщение кому-нибудь из администрации ({update._effective_chat.username})',
-        )
+        update.message.reply_text(not_a_student(update))
         return None
+    kwargs['student'] = student
+    return wrapped(*args, **kwargs)
+
+
+@for_students_only
+def start(update: Update, context: CallbackContext, student: Student) -> None:
     if student.telegram_chat_id:
         update.message.reply_text(
             f'Кажется, мы с вами уже знакомы. Привет, {student.first_name}.',
@@ -75,6 +91,41 @@ def error(update: Update, context: CallbackContext) -> None:
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 
+@for_students_only
+def feedback_command(update: Update, context: CallbackContext, student: Student) -> int:
+    update.message.reply_text(
+        (
+            f'Напиши любой фидбек, жалобу или идею. То, что ты напишешь, '
+            f'не увидит твой куратор, увидят только организаторы.'
+        ),
+    )
+    return GETTING_FEEDBACK
+
+
+@for_students_only
+def handle_feedback(update: Update, context: CallbackContext, student: Student) -> None:
+    AIRTABLE_API.save_feedback_on_demand(update.message.text, student)
+    context.bot.send_message(
+        TELERGAM_ORGS_CHAT_ID,
+        (
+            f'Студент {student.last_name} {student.first_name} оставил '
+            f'обратную связь:\n\n{update.message.text}'
+        ),
+    )
+    update.message.reply_text('Спасибо за обратную связь.')
+    return ConversationHandler.END
+
+
+def something_went_wrong(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(
+        (
+            'Что-то пошло не так. Попробуй воспользоваться /feedback '
+            'ещё раз или напиши кому-то из администраторов.'
+        ),
+    )
+    return ConversationHandler.END
+
+
 def main() -> None:
     updater = Updater(
         TELEGRAM_BOT_TOKEN,
@@ -93,6 +144,20 @@ def main() -> None:
 
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
+
+    dp.add_handler(
+        ConversationHandler(
+            entry_points=[CommandHandler('feedback', feedback_command)],
+
+            states={
+                GETTING_FEEDBACK: [
+                    MessageHandler(Filters.text, handle_feedback),
+                ],
+            },
+            fallbacks=[MessageHandler(Filters.text, something_went_wrong)],
+        ),
+    )
+
     dp.add_handler(CommandHandler(
         'restart',
         restart,
