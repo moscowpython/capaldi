@@ -1,9 +1,10 @@
 import os
 from typing import List, Any, Mapping, NamedTuple, Optional
 
+from dateparser import parse
 from requests import get, patch, post
 
-from learn_python_bot.common_types import Student
+from learn_python_bot.common_types import Student, Event
 from learn_python_bot.config import AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE
 
 
@@ -34,15 +35,32 @@ class AirtableAPI(NamedTuple):
             airtable_pk=raw_airtable_record['fields']['PK'],
         )
 
+    @staticmethod
+    def _extract_event_record(raw_airtable_record: Mapping[str, Any]) -> Event:
+        return Event(
+            title=raw_airtable_record['fields']['Name'],
+            at=parse(
+                raw_airtable_record['fields']['Дата занятия'],
+                settings={'TIMEZONE': 'Europe/Moscow'},
+            ),
+            zoom_url=raw_airtable_record['fields'].get('Zoom', None),
+        )
+
     def fetch_students_data_from_airtable(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'current_course',
-            params={'view': self.students_list_view_name},
         )
+        return raw_airtable_data.get('records', []) if raw_airtable_data else []
+
+    def fetch_events_data_from_airtable(self) -> List[Mapping[str, Any]]:
+        raw_airtable_data = self._make_airtable_request('calendar')
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 
     def extract_students(self, raw_students_data: List[Mapping[str, Any]]) -> List[Student]:
         return [self._extract_student_record(r) for r in raw_students_data]
+
+    def extract_events(self, raw_events_data: List[Mapping[str, Any]]) -> List[Event]:
+        return [self._extract_event_record(r) for r in raw_events_data]
 
     def set_telegram_chat_id(self, student_airtable_id: str, telegram_chat_id: int) -> Optional[Student]:
         raw_airtable_data = self._make_airtable_request(

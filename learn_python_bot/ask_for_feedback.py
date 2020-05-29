@@ -1,12 +1,10 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from click import command, option
-from telegram.error import BadRequest
 
-from api.airtable import AirtableAPI
-from learn_python_bot.api.telegram import get_bot
+from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.common_types import Student
-from learn_python_bot.config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
+from learn_python_bot.utils.telegram import send_message
 
 
 def ask_for_feedback(
@@ -14,22 +12,20 @@ def ask_for_feedback(
     week_num: int,
     ignore_errors_on_send: bool = False,
 ) -> None:
-    bot = get_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS)
+    if not student.telegram_chat_id:
+        return
     reply_markup = InlineKeyboardMarkup(
         [[
             InlineKeyboardButton('👍', callback_data=f'w{week_num}_yay'),
             InlineKeyboardButton('👎', callback_data=f'w{week_num}_fuu'),
         ]],
     )
-    try:
-        bot.send_message(
-            student.telegram_chat_id,
-            text=f'Привет, {student.first_name}. Закончилась {week_num} неделя курса. Как она тебе?',
-            reply_markup=reply_markup,
-        )
-    except BadRequest:
-        if not ignore_errors_on_send:
-            raise
+    send_message(
+        chat_id=student.telegram_chat_id,
+        message=f'Привет, {student.first_name}. Закончилась {week_num} неделя курса. Как она тебе?',
+        reply_markup=reply_markup,
+        ignore_errors_on_send=ignore_errors_on_send,
+    )
 
 
 @command()

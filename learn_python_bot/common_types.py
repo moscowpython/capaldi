@@ -1,3 +1,4 @@
+import datetime
 import re
 from typing import NamedTuple, Optional
 
@@ -24,3 +25,9 @@ class Student(NamedTuple):
         ):
             return False
         return True
+
+
+class Event(NamedTuple):
+    title: str
+    at: datetime.datetime
+    zoom_url: Optional[str]
