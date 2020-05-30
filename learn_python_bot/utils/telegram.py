@@ -10,6 +10,7 @@ def send_message(
     message: str,
     reply_markup: ReplyMarkup = None,
     ignore_errors_on_send: bool = False,
+    parse_markdown: bool = False,
 ) -> None:
     bot = get_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS)
 
@@ -18,7 +19,7 @@ def send_message(
             chat_id,
             text=message,
             reply_markup=reply_markup,
-            parse_mode=ParseMode.MARKDOWN_V2,
+            parse_mode=ParseMode.MARKDOWN_V2 if parse_markdown else None,
         )
     except BadRequest:
         if not ignore_errors_on_send:
