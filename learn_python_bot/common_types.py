@@ -13,6 +13,11 @@ class Student(NamedTuple):
     purpose: Optional[str]
     airtable_id: str
     airtable_pk: int
+    curator_id: Optional[str]
+
+    @property
+    def name(self) -> str:
+        return f'{self.last_name} {self.first_name}'
 
     @property
     def is_telegram_account_valid(self) -> bool:
@@ -31,3 +36,10 @@ class Event(NamedTuple):
     title: str
     at: datetime.datetime
     zoom_url: Optional[str]
+
+
+class Curator(NamedTuple):
+    name: str
+    telegram_account: Optional[str]
+    telegram_chat_id: Optional[str]
+    airtable_id: str

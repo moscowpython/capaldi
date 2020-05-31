@@ -4,7 +4,7 @@ from typing import List, Any, Mapping, NamedTuple, Optional
 from dateparser import parse
 from requests import get, patch, post
 
-from learn_python_bot.common_types import Student, Event
+from learn_python_bot.common_types import Student, Event, Curator
 from learn_python_bot.config import AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE
 
 
@@ -23,6 +23,7 @@ class AirtableAPI(NamedTuple):
 
     @staticmethod
     def _extract_student_record(raw_airtable_record: Mapping[str, Any]) -> Student:
+        curator = raw_airtable_record['fields'].get('courator')
         return Student(
             first_name=raw_airtable_record['fields']['first_name'],
             last_name=raw_airtable_record['fields']['last_name'],
@@ -33,6 +34,7 @@ class AirtableAPI(NamedTuple):
             purpose=raw_airtable_record['fields'].get('purpose'),
             airtable_id=raw_airtable_record['id'],
             airtable_pk=raw_airtable_record['fields']['PK'],
+            curator_id=curator[0] if curator else None,
         )
 
     @staticmethod
@@ -51,6 +53,18 @@ class AirtableAPI(NamedTuple):
             'current_course',
         )
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
+
+    def fetch_curators(self) -> List[Curator]:
+        raw_curators_data = self._make_airtable_request('curators')
+        raw_curators = raw_curators_data.get('records', []) if raw_curators_data else []
+        return [
+            Curator(
+                name=c['fields']['Куратор'],
+                telegram_account=c['fields'].get('Telegram'),
+                telegram_chat_id=None,
+                airtable_id=c['id'],
+            ) for c in raw_curators
+        ]
 
     def fetch_events_data_from_airtable(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request('calendar')
