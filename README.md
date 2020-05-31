@@ -26,5 +26,6 @@ Then run one of following commands:
 - `lp_run_bot` – run Telegram bot.
 - `lp_ask_for_feedback` – ask students for feedback on current week.
 - `lp_send_stat_report` – send feedback statistics of current week.
+- `lp_notify_on_tomorrow_event` – notify students if there is course event tomorrow.
 
 Run any command with `--help` to gel params list.

@@ -1,10 +1,13 @@
+import datetime
 from typing import NamedTuple, Mapping, Any, List
 
-from click import command, option
+from click import command, option, DateTime
 
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.api.telegram import get_bot
-from learn_python_bot.config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
+from learn_python_bot.config import (
+    TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS, TELERGAM_ORGS_CHAT_ID,
+)
 
 
 class FeedbackStatistics(NamedTuple):
@@ -36,24 +39,31 @@ def aggregate_feedback_data(raw_stat: List[Mapping[str, Any]]) -> FeedbackStatis
 
 def create_report(report_data: FeedbackStatistics) -> str:
     return (
-        f'Статистика по фидбеку за {report_data.week_num}-ю неделю.'
+        f'Статистика по фидбеку за {report_data.week_num}-ю неделю. '
         f'Пофидбечили {report_data.total} студентов, лайк поставили {report_data.liked} '
         f'({report_data.liked_percents}%).'
     )
 
 
-def send_report_to_telegram(report_str: str, orgs_chat_id: int) -> None:
+def send_report_to_telegram(report_str: str, orgs_chat_id: str) -> None:
     bot = get_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS)
     bot.send_message(orgs_chat_id, text=report_str)
 
 
+def get_current_course_week(course_start_date: datetime.date) -> int:
+    return (datetime.date.today() - course_start_date).days // 7
+
+
 @command()
-@option('--course_week_num', type=int, required=True)
-@option('--orgs_telegram_chat_id', type=int, required=True)
-def main(course_week_num: int, orgs_telegram_chat_id: int) -> None:
-    report_data = fetch_feedback_data_from_api(course_week_num)
-    report_str = create_report(report_data)
-    send_report_to_telegram(report_str, orgs_telegram_chat_id)
+@option('--course_week_num', type=int)
+@option('--course_start_date', type=DateTime())
+def main(course_week_num: int = None, course_start_date: datetime.datetime = None) -> None:
+    if not course_week_num and course_start_date:
+        course_week_num = get_current_course_week(course_start_date.date())
+    if course_week_num:
+        report_data = fetch_feedback_data_from_api(course_week_num)
+        report_str = create_report(report_data)
+        send_report_to_telegram(report_str, TELERGAM_ORGS_CHAT_ID)
 
 
 if __name__ == '__main__':
