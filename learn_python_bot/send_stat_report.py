@@ -8,6 +8,7 @@ from learn_python_bot.api.telegram import get_bot
 from learn_python_bot.config import (
     TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS, TELERGAM_ORGS_CHAT_ID,
 )
+from learn_python_bot.utils.date import get_current_course_week
 
 
 class FeedbackStatistics(NamedTuple):
@@ -48,10 +49,6 @@ def create_report(report_data: FeedbackStatistics) -> str:
 def send_report_to_telegram(report_str: str, orgs_chat_id: str) -> None:
     bot = get_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS)
     bot.send_message(orgs_chat_id, text=report_str)
-
-
-def get_current_course_week(course_start_date: datetime.date) -> int:
-    return (datetime.date.today() - course_start_date).days // 7
 
 
 @command()
