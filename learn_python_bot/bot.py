@@ -28,18 +28,17 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+# bot states
 GETTING_FEEDBACK = 1
-
-AIRTABLE_API = AirtableAPI.get_default_api()
-STUDENTS = AIRTABLE_API.extract_students(
-    AIRTABLE_API.fetch_students_data_from_airtable(),
-)
 
 
 @wrapt.decorator
 def for_students_only(wrapped: Callable, instance: Any, args: Any, kwargs: Any) -> Any:
-    update = args[0]
-    student = get_student_by_tg_nickname(update._effective_chat.username, STUDENTS)
+    update, context = args[:2]
+    student = get_student_by_tg_nickname(
+        update._effective_chat.username,
+        context.bot_data['students'],
+    )
     if student is None:
         update.message.reply_text(not_a_student(update))
         return None
@@ -54,10 +53,13 @@ def start(update: Update, context: CallbackContext, student: Student) -> None:
             f'Кажется, мы с вами уже знакомы. Привет, {student.first_name}.',
         )
         return None
-    new_student = AIRTABLE_API.set_telegram_chat_id(student.airtable_id, update._effective_chat.id)
+    new_student = context.bot_data['airtable_api'].set_telegram_chat_id(
+        student.airtable_id,
+        update._effective_chat.id,
+    )
     if new_student:
-        STUDENTS.remove(student)
-        STUDENTS.append(new_student)
+        context.bot_data['students'].remove(student)
+        context.bot_data['students'].append(new_student)
     update.message.reply_text(
         f'{student.first_name}, привет! Давай общаться. '
         f'Я буду иногда писать и спрашивать всякое.',
@@ -66,7 +68,10 @@ def start(update: Update, context: CallbackContext, student: Student) -> None:
 
 def process_feedback(update: Update, context: CallbackContext) -> None:
     answers_map = {'yay': True, 'fuu': False}
-    student = get_student_by_tg_nickname(update._effective_chat.username, STUDENTS)
+    student = get_student_by_tg_nickname(
+        update._effective_chat.username,
+        context.bot_data['students'],
+    )
     if student is None:
         update.message.reply_text(
             f'Кажется, ты не учишься на текущем наборе. Если это не так, то покажите '
@@ -76,10 +81,17 @@ def process_feedback(update: Update, context: CallbackContext) -> None:
     raw_response_text = update.callback_query.data
     week_num_str, raw_answer = raw_response_text.lstrip('w').split('_')
     week_num = int(week_num_str)
-    if AIRTABLE_API.student_has_feedback_for_week(week_num, student.airtable_pk):
+    if context.bot_data['airtable_api'].student_has_feedback_for_week(
+        week_num,
+        student.airtable_pk,
+    ):
         response_text = f'Кажется, у нас уже есть твой фидбек за неделю {week_num}'
     else:
-        AIRTABLE_API.save_feedback(student.airtable_id, week_num, answers_map[raw_answer])
+        context.bot_data['airtable_api'].save_feedback(
+            student.airtable_id,
+            week_num,
+            answers_map[raw_answer],
+        )
         answer_text = 'понравилась' if answers_map[raw_answer] else 'не понравилась'
         response_text = f'Записал, что тебе {answer_text} неделя {week_num}. Спасибо за честность.'
     query = update.callback_query
@@ -104,7 +116,7 @@ def feedback_command(update: Update, context: CallbackContext, student: Student)
 
 @for_students_only
 def handle_feedback(update: Update, context: CallbackContext, student: Student) -> None:
-    AIRTABLE_API.save_feedback_on_demand(update.message.text, student)
+    context.bot_data['airtable_api'].save_feedback_on_demand(update.message.text, student)
     context.bot.send_message(
         TELERGAM_ORGS_CHAT_ID,
         (
@@ -134,7 +146,6 @@ def main() -> None:
     )
 
     def stop_and_restart() -> None:
-        """Gracefully stop the Updater and replace the current process with a new one."""
         updater.stop()
         os.execl(sys.executable, sys.executable, *sys.argv)
 
@@ -143,6 +154,12 @@ def main() -> None:
         Thread(target=stop_and_restart).start()
 
     dp = updater.dispatcher
+
+    dp.bot_data['airtable_api'] = AirtableAPI.get_default_api()
+    dp.bot_data['students'] = dp.bot_data['airtable_api'].extract_students(
+        dp.bot_data['airtable_api'].fetch_students_data_from_airtable(),
+    )
+
     dp.add_handler(CommandHandler('start', start))
 
     dp.add_handler(
