@@ -47,9 +47,9 @@ setup(
     entry_points={
         'console_scripts': [
             'lp_run_bot = learn_python_bot.bot:main',
-            'lp_ask_for_feedback = learn_python_bot.ask_for_feedback:main',
-            'lp_send_stat_report = learn_python_bot.send_stat_report:main',
-            'lp_notify_on_tomorrow_event = learn_python_bot.notify_on_tommorow_event:main',
+            'lp_ask_for_feedback = learn_python_bot.bin.ask_for_feedback:main',
+            'lp_send_stat_report = learn_python_bot.bin.send_stat_report:main',
+            'lp_notify_on_tomorrow_event = learn_python_bot.bin.notify_on_tommorow_event:main',
         ],
     },
     url='https://github.com/moscowpython/capaldi',
