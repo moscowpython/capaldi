@@ -10,7 +10,9 @@ from telegram.ext import (
     Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
     Filters, ConversationHandler, MessageHandler,
 )
+from sentry_sdk import init, capture_exception, configure_scope
 
+from learn_python_bot import __version__
 from learn_python_bot.common_types import Student
 from learn_python_bot.config import (
     TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN,
@@ -27,6 +29,8 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+init(os.environ['SENTRY_URL'], release=__version__)
 
 # bot states
 GETTING_FEEDBACK = 1
@@ -101,6 +105,14 @@ def process_feedback(update: Update, context: CallbackContext) -> None:
 
 def error(update: Update, context: CallbackContext) -> None:
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+    with configure_scope() as scope:
+        scope.user = {
+            'username': update._effective_chat.username,
+            'chat_id': update._effective_chat.id,
+        }
+    capture_exception(
+        context.error,
+    )
 
 
 @for_students_only
