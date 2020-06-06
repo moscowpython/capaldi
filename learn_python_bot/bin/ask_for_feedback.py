@@ -32,7 +32,7 @@ def ask_for_feedback(
 
 
 @command()
-@option('--course_week_num', type=int, required=True)
+@option('--course_week_num', type=int)
 @option('--course_start_date', type=DateTime())
 def main(
     course_week_num: int = None,
