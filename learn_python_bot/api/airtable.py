@@ -61,7 +61,7 @@ class AirtableAPI(NamedTuple):
             Curator(
                 name=c['fields']['Куратор'],
                 telegram_account=c['fields'].get('Telegram'),
-                telegram_chat_id=None,
+                telegram_chat_id=c['fields'].get('chat_id'),
                 airtable_id=c['id'],
             ) for c in raw_curators
         ]
