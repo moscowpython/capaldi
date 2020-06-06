@@ -12,7 +12,7 @@ from learn_python_bot.utils.telegram import send_message
 @command()
 @option('--course_start_date', type=DateTime(), required=True)
 def main(
-    course_start_date: datetime.datetime = None,
+    course_start_date: datetime.datetime,
 ) -> None:
     course_week_num = get_current_course_week(course_start_date.date())
     if not course_week_num:
@@ -34,7 +34,7 @@ def main(
     curators = airtable_api.fetch_curators()
     for curator in curators:
         group = [s for s in students if s.curator_id == curator.airtable_id]
-        if not group:
+        if not group or not curator.telegram_chat_id:
             continue
         send_message(
             chat_id=curator.telegram_chat_id,
