@@ -44,6 +44,7 @@ setup(
         'dateparser>=0.7.4',
         'wrapt==1.12.1',
         'sentry-sdk>=0.14.4',
+        'redis==3.5.3',
     ],
     entry_points={
         'console_scripts': [

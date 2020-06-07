@@ -20,7 +20,8 @@ First, provide following env vars:
 - Telegram admin username (with @, like `@melevir`, `TELEGRAM_ADMIN_USERNAME`).
   Optional.
 - Airtable credentials (`AIRTABLE_API_KEY` and `AIRTABLE_BASE_ID`).
-- Sentry API url (`SENTRY_URL`)
+- Sentry API url (`SENTRY_URL`).
+- Redis url (in format `redis://[[username]:[password]]@localhost:6379/0`, `REDIS_URL`).
 
 Then run one of following commands:
 

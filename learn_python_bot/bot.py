@@ -3,6 +3,7 @@ import os
 import sys
 from threading import Thread
 
+from redis import Redis
 from telegram import Update
 from telegram.ext import (
     Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
@@ -13,7 +14,7 @@ from sentry_sdk import init, capture_exception, configure_scope
 from learn_python_bot import __version__
 from learn_python_bot.config import (
     TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN,
-)
+    REDIS_URL)
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.handlers.start import start
 from learn_python_bot.handlers.student_feedback_command import get_student_feedback_command_handler
@@ -66,6 +67,7 @@ def set_initial_bot_data(dispatcher: Dispatcher) -> None:
     dispatcher.bot_data.update({
         'airtable_api': airtable_api,
         'students': students,
+        'redis': Redis.from_url(REDIS_URL),
     })
 
 
