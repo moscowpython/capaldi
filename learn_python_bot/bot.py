@@ -75,7 +75,7 @@ def main() -> None:
     handlers = [
         CommandHandler('start', start),
         get_student_feedback_command_handler(),
-        CallbackQueryHandler(process_feedback, pattern=r'w\w+_yay'),
+        CallbackQueryHandler(process_feedback),
     ]
 
     updater = Updater(
