@@ -6,6 +6,7 @@ from learn_python_bot.utils.students import get_student_by_tg_nickname
 
 def process_feedback(update: Update, context: CallbackContext) -> None:
     answers_map = {'yay': 1, 'fuu': -1, 'meh': 0}
+    answers_text = {'yay': 'понравилась', 'fuu': 'не понравилась', 'meh': 'не очень понравилась'}
     student = get_student_by_tg_nickname(
         update._effective_chat.username,
         context.bot_data['students'],
@@ -30,7 +31,7 @@ def process_feedback(update: Update, context: CallbackContext) -> None:
             week_num,
             answers_map[raw_answer],
         )
-        answer_text = 'понравилась' if answers_map[raw_answer] else 'не понравилась'
+        answer_text = answers_text[raw_answer]
         response_text = f'Записал, что тебе {answer_text} неделя {week_num}. Спасибо за честность.'
     query = update.callback_query
     query.answer()
