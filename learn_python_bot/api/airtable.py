@@ -99,7 +99,7 @@ class AirtableAPI(NamedTuple):
 
         return bool(raw_airtable_data['records']) if raw_airtable_data else False
 
-    def save_feedback(self, student_airtable_id, week_num, is_liked) -> None:
+    def save_feedback(self, student_airtable_id, week_num, score: int) -> None:
         self._make_airtable_request(
             'weekly_feedback',
             method='post',
@@ -107,7 +107,8 @@ class AirtableAPI(NamedTuple):
                 {'fields': {
                     'student': [student_airtable_id],
                     'week_num': week_num,
-                    'liked': is_liked,
+                    'liked': score == 1,
+                    'score': score,
                 }},
             ]},
         )

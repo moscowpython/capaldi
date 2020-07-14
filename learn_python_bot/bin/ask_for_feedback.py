@@ -20,6 +20,7 @@ def ask_for_feedback(
     reply_markup = InlineKeyboardMarkup(
         [[
             InlineKeyboardButton('👍', callback_data=f'w{week_num}_yay'),
+            InlineKeyboardButton('😐', callback_data=f'w{week_num}_meh'),
             InlineKeyboardButton('👎', callback_data=f'w{week_num}_fuu'),
         ]],
     )

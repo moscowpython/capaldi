@@ -33,7 +33,7 @@ def fetch_feedback_data_from_api(course_week_num: int) -> FeedbackStatistics:
 
 def aggregate_feedback_data(raw_stat: List[Mapping[str, Any]]) -> FeedbackStatistics:
     week_num = raw_stat[0]['fields']['week_num']
-    liked = sum(1 for r in raw_stat if r['fields'].get('liked'))
+    liked = sum(1 for r in raw_stat if r['fields'].get('score') == 1)
     disliked = len(raw_stat) - liked
     return FeedbackStatistics(week_num=week_num, liked=liked, disliked=disliked)
 

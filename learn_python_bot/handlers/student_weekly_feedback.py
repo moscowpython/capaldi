@@ -5,7 +5,7 @@ from learn_python_bot.utils.students import get_student_by_tg_nickname
 
 
 def process_feedback(update: Update, context: CallbackContext) -> None:
-    answers_map = {'yay': True, 'fuu': False}
+    answers_map = {'yay': 1, 'fuu': -1, 'meh': 0}
     student = get_student_by_tg_nickname(
         update._effective_chat.username,
         context.bot_data['students'],
