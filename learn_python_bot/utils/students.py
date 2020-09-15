@@ -9,6 +9,6 @@ def get_student_by_tg_nickname(
 ) -> Optional[Student]:
     matched_students = [
         s for s in students
-        if s.telegram_account and s.telegram_account.strip('@') == telegram_username
+        if s.telegram_account and s.telegram_account.strip('@').lower() == telegram_username.lower()
     ]
     return matched_students[0] if matched_students else None
