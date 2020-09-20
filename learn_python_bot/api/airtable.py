@@ -51,6 +51,7 @@ class AirtableAPI(NamedTuple):
     def fetch_students_data_from_airtable(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'current_course',
+            params={'filterByFormula': 'is_current_course_student=1'},
         )
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 

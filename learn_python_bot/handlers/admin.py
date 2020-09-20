@@ -6,5 +6,5 @@ from learn_python_bot.decorators import for_admins_only
 
 @for_admins_only
 def admin_keyboard(update: Update, context: CallbackContext) -> None:
-    keyboard = ReplyKeyboardMarkup([['Reload students']])
+    keyboard = ReplyKeyboardMarkup([['Reload students', 'Restart bot']])
     update.message.reply_text('Hello admin', reply_markup=keyboard)
