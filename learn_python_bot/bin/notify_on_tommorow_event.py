@@ -15,10 +15,10 @@ def create_message_for_tommorow_event(tommorow_event: Event) -> str:
 def main() -> None:
     airtable_api = AirtableAPI.get_default_api()
     students = airtable_api.extract_students(
-        airtable_api.fetch_students_data_from_airtable(),
+        airtable_api.fetch_students_data(),
     )
     events = airtable_api.extract_events(
-        airtable_api.fetch_events_data_from_airtable(),
+        airtable_api.fetch_events_data(),
     )
 
     tommorow = datetime.date.today() + datetime.timedelta(days=1)

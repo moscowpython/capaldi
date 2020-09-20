@@ -49,7 +49,7 @@ class AirtableAPI(NamedTuple):
             zoom_url=raw_airtable_record['fields'].get('Zoom', None),
         )
 
-    def fetch_students_data_from_airtable(self) -> List[Mapping[str, Any]]:
+    def fetch_students_data(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'current_course',
         )
@@ -67,7 +67,7 @@ class AirtableAPI(NamedTuple):
             ) for c in raw_curators
         ]
 
-    def fetch_events_data_from_airtable(self) -> List[Mapping[str, Any]]:
+    def fetch_events_data(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request('calendar')
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 

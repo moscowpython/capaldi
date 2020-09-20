@@ -46,7 +46,7 @@ def main(
 
     api = AirtableAPI.get_default_api()
     all_students = api.extract_students(
-        api.fetch_students_data_from_airtable(),
+        api.fetch_students_data(),
     )
     students = [s for s in all_students if s.telegram_chat_id]
     for student in students:

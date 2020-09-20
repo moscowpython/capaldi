@@ -66,7 +66,7 @@ def mutate_bot_to_be_restartable(updater: Updater):
 def set_initial_bot_data(dispatcher: Dispatcher) -> None:
     airtable_api = AirtableAPI.get_default_api()
     students = airtable_api.extract_students(
-        airtable_api.fetch_students_data_from_airtable(),
+        airtable_api.fetch_students_data(),
     )
     dispatcher.bot_data.update({
         'airtable_api': airtable_api,

@@ -29,7 +29,7 @@ def main(
 
     airtable_api = AirtableAPI.get_default_api()
     students = airtable_api.extract_students(
-        airtable_api.fetch_students_data_from_airtable(),
+        airtable_api.fetch_students_data(),
     )
     curators = airtable_api.fetch_curators()
     for curator in curators:
