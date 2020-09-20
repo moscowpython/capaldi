@@ -5,7 +5,8 @@ from dateparser import parse
 from requests import get, patch, post
 
 from learn_python_bot.common_types import Student, Event, Curator
-from learn_python_bot.config import AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE
+from learn_python_bot.config import (AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE,
+    AIRTABLE_API_KEY, AIRTABLE_BASE_ID)
 
 
 class AirtableAPI(NamedTuple):
@@ -16,8 +17,8 @@ class AirtableAPI(NamedTuple):
     @staticmethod
     def get_default_api() -> 'AirtableAPI':
         return AirtableAPI(
-            airtable_api_token=os.environ['AIRTABLE_API_KEY'],
-            airtable_base_id=os.environ['AIRTABLE_BASE_ID'],
+            airtable_api_token=AIRTABLE_API_KEY,
+            airtable_base_id=AIRTABLE_BASE_ID,
             students_list_view_name=AIRTABLE_VIEW_NAME,
         )
 
