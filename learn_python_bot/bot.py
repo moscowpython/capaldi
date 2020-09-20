@@ -7,7 +7,7 @@ from redis import Redis
 from telegram import Update
 from telegram.ext import (
     Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
-    Dispatcher,
+    Dispatcher, Filters, MessageHandler,
 )
 from sentry_sdk import init, capture_exception, configure_scope
 
@@ -53,7 +53,7 @@ def mutate_bot_to_be_restartable(updater: Updater):
         Thread(target=stop_and_restart).start()
 
     dp = updater.dispatcher
-    dp.add_handler(CommandHandler('restart', restart))
+    dp.add_handler(MessageHandler(Filters.regex('^(Restart bot)$'), restart))
 
 
 def set_initial_bot_data(dispatcher: Dispatcher) -> None:
@@ -68,10 +68,18 @@ def set_initial_bot_data(dispatcher: Dispatcher) -> None:
     })
 
 
+@for_admins_only
+def set_initial_bot_data_command(update: Update, context: CallbackContext) -> None:
+    set_initial_bot_data(context.dispatcher)
+    students_count = len(context.dispatcher.bot_data['students'])
+    update.message.reply_text(f'Loaded {students_count} students')
+
+
 def main() -> None:
     handlers = [
         CommandHandler('start', start),
         CommandHandler('admin', admin_keyboard),
+        MessageHandler(Filters.regex('^(Reload students)$'), set_initial_bot_data_command),
         get_student_feedback_command_handler(),
         CallbackQueryHandler(process_feedback),
     ]
