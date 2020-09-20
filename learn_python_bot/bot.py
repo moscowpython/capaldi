@@ -7,7 +7,7 @@ from redis import Redis
 from telegram import Update
 from telegram.ext import (
     Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
-    Filters, Dispatcher,
+    Dispatcher,
 )
 from sentry_sdk import init, capture_exception, configure_scope
 
