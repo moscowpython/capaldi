@@ -13,6 +13,6 @@ TELEGRAM_PROXY_SETTINGS = {
     },
 }
 TELEGRAM_ADMINS = os.environ.get('TELEGRAM_ADMINS', '@korneevm,@pyhoster,@SimonOsipov').split(',')
-TELERGAM_ORGS_CHAT_ID = '-1001204501936'
+TELERGAM_ORGS_CHAT_ID = os.environ.get('TELERGAM_ORGS_CHAT_ID', '-1001204501936')
 
 REDIS_URL = os.environ.get('CAPALDI_REDIS_URL', 'redis://localhost:6379/0')
