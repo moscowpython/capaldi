@@ -17,7 +17,7 @@ First, provide following env vars:
 - Telegram bot token (`TELEGRAM_BOT_TOKEN`).
 - Telegram bot proxy settings (`TELEGRAM_PROXY_URL`, `TELEGRAM_PROXY_LOGIN`,
   `TELEGRAM_PROXY_PASSWORD`).
-- Telegram admin username (with @, like `@melevir`, `TELEGRAM_ADMIN_USERNAME`).
+- Telegram admin usernames (with @, comma-separated like `@melevir,@korneevm`, `TELEGRAM_ADMINS`).
   Optional.
 - Airtable credentials (`AIRTABLE_API_KEY` and `AIRTABLE_BASE_ID`).
 - Sentry API url (`SENTRY_URL`).

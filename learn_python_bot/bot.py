@@ -12,10 +12,9 @@ from telegram.ext import (
 from sentry_sdk import init, capture_exception, configure_scope
 
 from learn_python_bot import __version__
-from learn_python_bot.config import (
-    TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN,
-    REDIS_URL)
+from learn_python_bot.config import TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN, REDIS_URL
 from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.decorators import for_admins_only
 from learn_python_bot.handlers.start import start
 from learn_python_bot.handlers.student_feedback_command import get_student_feedback_command_handler
 from learn_python_bot.handlers.student_weekly_feedback import process_feedback
@@ -47,16 +46,13 @@ def mutate_bot_to_be_restartable(updater: Updater):
         updater.stop()
         os.execl(sys.executable, sys.executable, *sys.argv)
 
+    @for_admins_only
     def restart(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('Bot is restarting...')
         Thread(target=stop_and_restart).start()
 
     dp = updater.dispatcher
-    dp.add_handler(CommandHandler(
-        'restart',
-        restart,
-        filters=Filters.user(username=TELEGRAM_ADMIN_USERNAME),
-    ))
+    dp.add_handler(CommandHandler('restart', restart))
 
 
 def set_initial_bot_data(dispatcher: Dispatcher) -> None:
