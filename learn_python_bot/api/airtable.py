@@ -31,7 +31,7 @@ class AirtableAPI(NamedTuple):
             telegram_account=raw_airtable_record['fields'].get('telegram'),
             telegram_chat_id=raw_airtable_record['fields'].get('chat_id'),
             phone_number=raw_airtable_record['fields'].get('phone'),
-            knowledge_description=raw_airtable_record['fields']['knowledge_description'],
+            knowledge_description=raw_airtable_record['fields'].get('knowledge_description'),
             purpose=raw_airtable_record['fields'].get('purpose'),
             airtable_id=raw_airtable_record['id'],
             airtable_pk=raw_airtable_record['fields']['PK'],
@@ -57,6 +57,7 @@ class AirtableAPI(NamedTuple):
     def fetch_students_data(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'current_course',
+            params={'filterByFormula': 'is_current_course_student=1'},
         )
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 

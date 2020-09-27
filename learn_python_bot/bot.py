@@ -7,15 +7,16 @@ from redis import Redis
 from telegram import Update
 from telegram.ext import (
     Updater, CommandHandler, CallbackContext, CallbackQueryHandler,
-    Filters, Dispatcher,
+    Dispatcher, Filters, MessageHandler,
 )
 from sentry_sdk import init as init_setry, capture_exception, configure_scope
 
 from learn_python_bot import __version__
-from learn_python_bot.config import (
-    TELEGRAM_ADMIN_USERNAME, TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN,
-    REDIS_URL, SENTRY_URL)
+from learn_python_bot.config import (TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN, REDIS_URL,
+                                     SENTRY_URL)
 from learn_python_bot.api.airtable import AirtableAPI
+from learn_python_bot.decorators import for_admins_only
+from learn_python_bot.handlers.admin import admin_keyboard, admin_show_students
 from learn_python_bot.handlers.start import start
 from learn_python_bot.handlers.student_feedback_command import get_student_feedback_command_handler
 from learn_python_bot.handlers.student_weekly_feedback import process_feedback
@@ -51,16 +52,13 @@ def mutate_bot_to_be_restartable(updater: Updater):
         updater.stop()
         os.execl(sys.executable, sys.executable, *sys.argv)
 
+    @for_admins_only
     def restart(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('Bot is restarting...')
         Thread(target=stop_and_restart).start()
 
     dp = updater.dispatcher
-    dp.add_handler(CommandHandler(
-        'restart',
-        restart,
-        filters=Filters.user(username=TELEGRAM_ADMIN_USERNAME),
-    ))
+    dp.add_handler(MessageHandler(Filters.regex('^(Restart bot)$'), restart))
 
 
 def set_initial_bot_data(dispatcher: Dispatcher) -> None:
@@ -75,9 +73,19 @@ def set_initial_bot_data(dispatcher: Dispatcher) -> None:
     })
 
 
+@for_admins_only
+def set_initial_bot_data_command(update: Update, context: CallbackContext) -> None:
+    set_initial_bot_data(context.dispatcher)
+    students_count = len(context.dispatcher.bot_data['students'])
+    update.message.reply_text(f'Loaded {students_count} students')
+
+
 def main() -> None:
     handlers = [
         CommandHandler('start', start),
+        CommandHandler('admin', admin_keyboard),
+        MessageHandler(Filters.regex('^(Show students)$'), admin_show_students),
+        MessageHandler(Filters.regex('^(Reload students)$'), set_initial_bot_data_command),
         get_student_feedback_command_handler(),
         CallbackQueryHandler(process_feedback),
     ]

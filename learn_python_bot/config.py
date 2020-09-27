@@ -15,8 +15,8 @@ if 'TELEGRAM_PROXY_URL' in os.environ:
             'password': os.environ['TELEGRAM_PROXY_PASSWORD'],
         },
     }
-TELEGRAM_ADMIN_USERNAME = os.environ.get('TELEGRAM_ADMIN_USERNAME', '@melevir')
-TELERGAM_ORGS_CHAT_ID = '-1001204501936'
+TELEGRAM_ADMINS = os.environ.get('TELEGRAM_ADMINS', '@korneevm,@pyhoster,@SimonOsipov').split(',')
+TELERGAM_ORGS_CHAT_ID = os.environ.get('TELERGAM_ORGS_CHAT_ID', '-1001204501936')
 
 REDIS_URL = os.environ.get('CAPALDI_REDIS_URL', 'redis://localhost:6379/0')
 SENTRY_URL = os.environ.get('SENTRY_URL')
