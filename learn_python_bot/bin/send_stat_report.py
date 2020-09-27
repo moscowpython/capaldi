@@ -4,11 +4,9 @@ from typing import NamedTuple, Mapping, Any, List
 from click import command, option, DateTime
 
 from learn_python_bot.api.airtable import AirtableAPI
-from learn_python_bot.api.telegram import get_bot
-from learn_python_bot.config import (
-    TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS, TELERGAM_ORGS_CHAT_ID,
-)
+from learn_python_bot.config import TELERGAM_ORGS_CHAT_ID
 from learn_python_bot.utils.date import get_current_course_week
+from learn_python_bot.utils.telegram import send_message
 
 
 class FeedbackStatistics(NamedTuple):
@@ -46,9 +44,11 @@ def create_report(report_data: FeedbackStatistics) -> str:
     )
 
 
-def send_report_to_telegram(report_str: str, orgs_chat_id: str) -> None:
-    bot = get_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS)
-    bot.send_message(orgs_chat_id, text=report_str)
+def send_report_to_orgs(course_week_num: int) -> None:
+    report_data = fetch_feedback_data_from_api(course_week_num)
+    report_str = create_report(report_data)
+
+    send_message(TELERGAM_ORGS_CHAT_ID, message=report_str, ignore_errors_on_send=True)
 
 
 @command()
@@ -58,9 +58,7 @@ def main(course_week_num: int = None, course_start_date: datetime.datetime = Non
     if not course_week_num and course_start_date:
         course_week_num = get_current_course_week(course_start_date.date())
     if course_week_num:
-        report_data = fetch_feedback_data_from_api(course_week_num)
-        report_str = create_report(report_data)
-        send_report_to_telegram(report_str, TELERGAM_ORGS_CHAT_ID)
+        send_report_to_orgs(course_week_num)
 
 
 if __name__ == '__main__':
