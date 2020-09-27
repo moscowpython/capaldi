@@ -31,6 +31,8 @@ class AirtableAPI(NamedTuple):
             telegram_account=raw_airtable_record['fields'].get('telegram'),
             telegram_chat_id=raw_airtable_record['fields'].get('chat_id'),
             phone_number=raw_airtable_record['fields'].get('phone'),
+            email=raw_airtable_record['fields'].get('email'),
+            group_type=raw_airtable_record['fields'].get('type'),
             knowledge_description=raw_airtable_record['fields'].get('knowledge_description'),
             purpose=raw_airtable_record['fields'].get('purpose'),
             airtable_id=raw_airtable_record['id'],
