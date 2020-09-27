@@ -9,7 +9,7 @@ STUDENT_TYPE_OFFLINE = 'оффлайн'
 class Student(NamedTuple):
     first_name: str
     last_name: str
-    type: str
+    group_type: str
     telegram_account: Optional[str]
     telegram_chat_id: Optional[str]
     phone_number: Optional[str]
@@ -35,11 +35,11 @@ class Student(NamedTuple):
             return False
         return True
 
-    def is_online(self):
-        return self.type == STUDENT_TYPE_ONLINE
+    def is_online(self) -> bool:
+        return self.group_type == STUDENT_TYPE_ONLINE
 
-    def is_offline(self):
-        return self.type == STUDENT_TYPE_OFFLINE
+    def is_offline(self) -> bool:
+        return self.group_type == STUDENT_TYPE_OFFLINE
 
 
 class Event(NamedTuple):
@@ -50,7 +50,7 @@ class Event(NamedTuple):
     where: Optional[str]
 
     @property
-    def week_num(self):
+    def week_num(self) -> str:
         return self.title.split()[0]
 
 

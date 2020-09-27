@@ -9,7 +9,7 @@ from learn_python_bot.utils.date import get_current_course_week
 from learn_python_bot.utils.telegram import send_message
 
 
-def ask_curators_to_report(course_week_num):
+def ask_curators_to_report(course_week_num: str) -> None:
     reply_markup = InlineKeyboardMarkup(
         [[
             InlineKeyboardButton(

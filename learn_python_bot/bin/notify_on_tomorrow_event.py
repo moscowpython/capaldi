@@ -8,7 +8,7 @@ from learn_python_bot.utils.telegram import send_message
 logger = logging.getLogger(__name__)
 
 
-def timedelta_hours(delta: datetime.timedelta):
+def timedelta_hours(delta: datetime.timedelta) -> int:
     return int((delta.days * 24 * 3600 + delta.seconds) / 3600)
 
 

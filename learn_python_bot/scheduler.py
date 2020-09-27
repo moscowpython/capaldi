@@ -5,6 +5,7 @@ from functools import partial
 import pytz
 import telegram
 from prettytable import PrettyTable
+from telegram.ext import Updater
 
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.bin.notify_on_tomorrow_event import main as notify_on_tomorrow
@@ -29,7 +30,7 @@ def ask_curators_to_report_job(week_num: str, context: telegram.ext.CallbackCont
     ask_curators_to_report(week_num)
 
 
-def init_schedulers(updater):
+def init_schedulers(updater: Updater):
 
     # Getting all events from calendar
     airtable_api = AirtableAPI.get_default_api()
