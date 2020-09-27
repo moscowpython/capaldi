@@ -9,15 +9,7 @@ from learn_python_bot.utils.date import get_current_course_week
 from learn_python_bot.utils.telegram import send_message
 
 
-@command()
-@option('--course_start_date', type=DateTime(), required=True)
-def main(
-    course_start_date: datetime.datetime,
-) -> None:
-    course_week_num = get_current_course_week(course_start_date.date())
-    if not course_week_num:
-        return
-
+def ask_curators_to_report(course_week_num):
     reply_markup = InlineKeyboardMarkup(
         [[
             InlineKeyboardButton(
@@ -45,6 +37,18 @@ def main(
             reply_markup=reply_markup,
             ignore_errors_on_send=False,
         )
+
+
+@command()
+@option('--course_start_date', type=DateTime(), required=True)
+def main(
+    course_start_date: datetime.datetime,
+) -> None:
+    course_week_num = get_current_course_week(course_start_date.date())
+    if not course_week_num:
+        return
+
+    ask_curators_to_report(course_week_num)
 
 
 if __name__ == '__main__':

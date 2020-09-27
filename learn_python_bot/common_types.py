@@ -2,10 +2,14 @@ import datetime
 import re
 from typing import NamedTuple, Optional
 
+STUDENT_TYPE_ONLINE = 'онлайн'
+STUDENT_TYPE_OFFLINE = 'оффлайн'
+
 
 class Student(NamedTuple):
     first_name: str
     last_name: str
+    type: str
     telegram_account: Optional[str]
     telegram_chat_id: Optional[str]
     phone_number: Optional[str]
@@ -31,11 +35,23 @@ class Student(NamedTuple):
             return False
         return True
 
+    def is_online(self):
+        return self.type == STUDENT_TYPE_ONLINE
+
+    def is_offline(self):
+        return self.type == STUDENT_TYPE_OFFLINE
+
 
 class Event(NamedTuple):
     title: str
-    at: datetime.datetime
+    online_at: datetime.datetime
+    offline_at: datetime.datetime
     zoom_url: Optional[str]
+    where: Optional[str]
+
+    @property
+    def week_num(self):
+        return self.title.split()[0]
 
 
 class Curator(NamedTuple):

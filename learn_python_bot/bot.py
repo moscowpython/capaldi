@@ -19,7 +19,7 @@ from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.handlers.start import start
 from learn_python_bot.handlers.student_feedback_command import get_student_feedback_command_handler
 from learn_python_bot.handlers.student_weekly_feedback import process_feedback
-
+from learn_python_bot.scheduler import init_schedulers
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -90,6 +90,7 @@ def main() -> None:
     dp = updater.dispatcher
 
     mutate_bot_to_be_restartable(updater)
+    init_schedulers(updater)
     set_initial_bot_data(dp)
     for handler in handlers:
         dp.add_handler(handler)

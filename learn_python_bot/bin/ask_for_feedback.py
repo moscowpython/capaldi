@@ -10,6 +10,16 @@ from learn_python_bot.utils.date import get_current_course_week
 from learn_python_bot.utils.telegram import send_message
 
 
+def ask_students_for_feedback(course_week_num):
+    api: AirtableAPI = AirtableAPI.get_default_api()
+    all_students = api.extract_students(
+        api.fetch_students_data(),
+    )
+    students = [s for s in all_students if s.telegram_chat_id]
+    for student in students:
+        ask_for_feedback(student=student, week_num=course_week_num)
+
+
 def ask_for_feedback(
     student: Student,
     week_num: int,
@@ -44,13 +54,7 @@ def main(
     if not course_week_num:
         return
 
-    api = AirtableAPI.get_default_api()
-    all_students = api.extract_students(
-        api.fetch_students_data(),
-    )
-    students = [s for s in all_students if s.telegram_chat_id]
-    for student in students:
-        ask_for_feedback(student=student, week_num=course_week_num)
+    ask_students_for_feedback(course_week_num)
 
 
 if __name__ == '__main__':
