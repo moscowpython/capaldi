@@ -9,7 +9,6 @@ STUDENT_TYPE_OFFLINE = 'оффлайн'
 class Student(NamedTuple):
     first_name: str
     last_name: str
-    group_type: str
     telegram_account: Optional[str]
     telegram_chat_id: Optional[str]
     phone_number: Optional[str]

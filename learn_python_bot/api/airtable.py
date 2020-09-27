@@ -27,7 +27,6 @@ class AirtableAPI(NamedTuple):
         return Student(
             first_name=raw_airtable_record['fields']['first_name'],
             last_name=raw_airtable_record['fields']['last_name'],
-            group_type=raw_airtable_record['fields']['type'],
             telegram_account=raw_airtable_record['fields'].get('telegram'),
             telegram_chat_id=raw_airtable_record['fields'].get('chat_id'),
             phone_number=raw_airtable_record['fields'].get('phone'),
