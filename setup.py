@@ -45,6 +45,8 @@ setup(
         'wrapt==1.12.1',
         'sentry-sdk>=0.14.4',
         'redis==3.5.3',
+        'pytz==2020.1',
+        'prettytable==0.7.2',
     ],
     entry_points={
         'console_scripts': [
