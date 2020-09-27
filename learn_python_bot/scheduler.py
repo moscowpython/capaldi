@@ -20,12 +20,12 @@ def notify_on_tomorrow_job(context: telegram.ext.CallbackContext):
     notify_on_tomorrow()
 
 
-def ask_students_for_feedback_job(week_num: str, context: telegram.ext.CallbackContext):
+def ask_students_for_feedback_job(week_num: int, context: telegram.ext.CallbackContext):
     logger.info('[SCHEDULER] starting students satisfaction feedback')
     ask_students_for_feedback(week_num)
 
 
-def ask_curators_to_report_job(week_num: str, context: telegram.ext.CallbackContext):
+def ask_curators_to_report_job(week_num: int, context: telegram.ext.CallbackContext):
     logger.info('[SCHEDULER] starting curators reports feedback')
     ask_curators_to_report(week_num)
 

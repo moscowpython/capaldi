@@ -50,8 +50,11 @@ class Event(NamedTuple):
     where: Optional[str]
 
     @property
-    def week_num(self) -> str:
-        return self.title.split()[0]
+    def week_num(self) -> int:
+        try:
+            return int(self.title.split()[0])
+        except (TypeError, ValueError):
+            return 1
 
 
 class Curator(NamedTuple):
