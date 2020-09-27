@@ -24,7 +24,7 @@ def admin_show_students(update: Update, context: CallbackContext) -> None:
 
 
 @for_admins_only
-def admin_message_students_1(update: Update, context: CallbackContext) -> None:
+def admin_message_students_1(update: Update, context: CallbackContext) -> str:
     group_types = get_group_types(context.dispatcher.bot_data['students'])
     keyboard = ReplyKeyboardMarkup([group_types])
     update.message.reply_text('Выберите тип группы', reply_markup=keyboard)
@@ -32,7 +32,7 @@ def admin_message_students_1(update: Update, context: CallbackContext) -> None:
 
 
 @for_admins_only
-def admin_message_students_2(update: Update, context: CallbackContext) -> None:
+def admin_message_students_2(update: Update, context: CallbackContext) -> str:
     group_type = update.message.text
     if group_type not in get_group_types(context.dispatcher.bot_data['students']):
         update.message.reply_text('Выберите тип группы')
@@ -52,7 +52,7 @@ def admin_message_students_2(update: Update, context: CallbackContext) -> None:
 
 
 @for_admins_only
-def admin_message_students_3(update: Update, context: CallbackContext) -> None:
+def admin_message_students_3(update: Update, context: CallbackContext) -> str:
     context.user_data['admin_message']['text'] = update.message.text
     user_text = f"""Проверьте рассылку:
 <b>Тип группы:</b> {context.user_data['admin_message']['group_type']}
@@ -64,7 +64,7 @@ def admin_message_students_3(update: Update, context: CallbackContext) -> None:
 
 
 @for_admins_only
-def admin_message_students_send(update: Update, context: CallbackContext) -> None:
+def admin_message_students_send(update: Update, context: CallbackContext) -> ConversationHandler.END:
     update.message.reply_text('Рассылка начата', reply_markup=ReplyKeyboardRemove())
     for student in context.user_data['admin_message']['recipients']:
         if student.telegram_chat_id:
@@ -77,7 +77,7 @@ def admin_message_students_send(update: Update, context: CallbackContext) -> Non
 
 
 @for_admins_only
-def admin_message_students_cancel(update: Update, context: CallbackContext) -> None:
+def admin_message_students_cancel(update: Update, context: CallbackContext) -> ConversationHandler.END:
     context.user_data['admin_message'] = {}
     update.message.reply_text('Отправка отменена', reply_markup=get_admin_keyboard())
     return ConversationHandler.END
