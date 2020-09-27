@@ -5,7 +5,7 @@ from learn_python_bot.decorators import for_admins_only
 from learn_python_bot.utils.students import get_group_types
 
 
-def get_admin_keyboard() -> None:
+def get_admin_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup([['Show students', 'Message students', 'Reload students', 'Restart bot']])
 
 
