@@ -1,11 +1,11 @@
-import os
 from typing import List, Any, Mapping, NamedTuple, Optional
 
 from dateparser import parse
 from requests import get, patch, post
 
 from learn_python_bot.common_types import Student, Event, Curator
-from learn_python_bot.config import AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE
+from learn_python_bot.config import (AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE,
+                                     AIRTABLE_API_KEY, AIRTABLE_BASE_ID)
 
 
 class AirtableAPI(NamedTuple):
@@ -16,8 +16,8 @@ class AirtableAPI(NamedTuple):
     @staticmethod
     def get_default_api() -> 'AirtableAPI':
         return AirtableAPI(
-            airtable_api_token=os.environ['AIRTABLE_API_KEY'],
-            airtable_base_id=os.environ['AIRTABLE_BASE_ID'],
+            airtable_api_token=AIRTABLE_API_KEY,
+            airtable_base_id=AIRTABLE_BASE_ID,
             students_list_view_name=AIRTABLE_VIEW_NAME,
         )
 
@@ -43,14 +43,19 @@ class AirtableAPI(NamedTuple):
     def _extract_event_record(raw_airtable_record: Mapping[str, Any]) -> Event:
         return Event(
             title=raw_airtable_record['fields']['Name'],
-            at=parse(
-                raw_airtable_record['fields']['Дата занятия'],
+            online_at=parse(
+                raw_airtable_record['fields']['online_datetime'],
                 settings={'TIMEZONE': 'Europe/Moscow'},
             ),
-            zoom_url=raw_airtable_record['fields'].get('Zoom', None),
+            offline_at=parse(
+                raw_airtable_record['fields']['offline_datetime'],
+                settings={'TIMEZONE': 'Europe/Moscow'},
+            ),
+            zoom_url=raw_airtable_record['fields'].get('zoom', None),
+            where=raw_airtable_record['fields'].get('where', ''),
         )
 
-    def fetch_students_data_from_airtable(self) -> List[Mapping[str, Any]]:
+    def fetch_students_data(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'current_course',
             params={'filterByFormula': 'is_current_course_student=1'},
@@ -69,7 +74,7 @@ class AirtableAPI(NamedTuple):
             ) for c in raw_curators
         ]
 
-    def fetch_events_data_from_airtable(self) -> List[Mapping[str, Any]]:
+    def fetch_events_data(self) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request('calendar')
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 

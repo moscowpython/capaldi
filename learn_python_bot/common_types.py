@@ -2,6 +2,9 @@ import datetime
 import re
 from typing import NamedTuple, Optional
 
+STUDENT_TYPE_ONLINE = 'онлайн'
+STUDENT_TYPE_OFFLINE = 'оффлайн'
+
 
 class Student(NamedTuple):
     first_name: str
@@ -33,11 +36,26 @@ class Student(NamedTuple):
             return False
         return True
 
+    def is_online(self) -> bool:
+        return STUDENT_TYPE_ONLINE in self.group_type.lower()
+
+    def is_offline(self) -> bool:
+        return STUDENT_TYPE_OFFLINE in self.group_type.lower()
+
 
 class Event(NamedTuple):
     title: str
-    at: datetime.datetime
+    online_at: datetime.datetime
+    offline_at: datetime.datetime
     zoom_url: Optional[str]
+    where: Optional[str]
+
+    @property
+    def week_num(self) -> int:
+        try:
+            return int(self.title.split()[0])
+        except (TypeError, ValueError):
+            return 1
 
 
 class Curator(NamedTuple):
