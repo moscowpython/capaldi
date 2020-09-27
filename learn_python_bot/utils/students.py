@@ -16,3 +16,11 @@ def get_student_by_tg_nickname(
 
 def names_equal(telegram_account: str, telegram_username: str) -> bool:
     return telegram_account.strip('@').lower() == telegram_username.lower()
+
+
+def get_group_types(students: List[Student]) -> List[str]:
+    group_types = {s.group_type for s in students}
+    group_types.add('Все студенты')
+    group_types = list(group_types)
+    group_types.sort()
+    return group_types

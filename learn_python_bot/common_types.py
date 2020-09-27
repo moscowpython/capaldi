@@ -9,6 +9,8 @@ class Student(NamedTuple):
     telegram_account: Optional[str]
     telegram_chat_id: Optional[str]
     phone_number: Optional[str]
+    email: Optional[str]
+    group_type: str
     knowledge_description: str
     purpose: Optional[str]
     airtable_id: str
