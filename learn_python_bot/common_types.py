@@ -36,10 +36,10 @@ class Student(NamedTuple):
         return True
 
     def is_online(self) -> bool:
-        return self.group_type == STUDENT_TYPE_ONLINE
+        return STUDENT_TYPE_ONLINE in self.group_type.lower()
 
     def is_offline(self) -> bool:
-        return self.group_type == STUDENT_TYPE_OFFLINE
+        return STUDENT_TYPE_OFFLINE in self.group_type.lower()
 
 
 class Event(NamedTuple):
