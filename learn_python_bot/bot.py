@@ -15,7 +15,7 @@ from learn_python_bot import __version__
 from learn_python_bot.config import TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN, REDIS_URL
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.decorators import for_admins_only
-from learn_python_bot.handlers.admin import admin_keyboard, admin_show_students
+from learn_python_bot.handlers.admin import admin_keyboard, admin_show_students, get_admin_announce_command_handler
 from learn_python_bot.handlers.start import start
 from learn_python_bot.handlers.student_feedback_command import get_student_feedback_command_handler
 from learn_python_bot.handlers.student_weekly_feedback import process_feedback
@@ -83,6 +83,7 @@ def main() -> None:
         MessageHandler(Filters.regex('^(Reload students)$'), set_initial_bot_data_command),
         get_student_feedback_command_handler(),
         CallbackQueryHandler(process_feedback),
+        get_admin_announce_command_handler(),
     ]
 
     updater = Updater(
