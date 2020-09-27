@@ -79,6 +79,7 @@ def main() -> None:
     handlers = [
         CommandHandler('start', start),
         CommandHandler('admin', admin_keyboard),
+        MessageHandler(Filters.regex('^(Show students)$'), admin_show_students),
         MessageHandler(Filters.regex('^(Reload students)$'), set_initial_bot_data_command),
         get_student_feedback_command_handler(),
         CallbackQueryHandler(process_feedback),
