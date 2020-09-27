@@ -1,3 +1,5 @@
+from typing import Optional
+
 from telegram import Update, ReplyKeyboardMarkup, ParseMode, ReplyKeyboardRemove
 from telegram.ext import CallbackContext, ConversationHandler, MessageHandler, Filters
 
@@ -32,10 +34,11 @@ def admin_message_students_1(update: Update, context: CallbackContext) -> str:
 
 
 @for_admins_only
-def admin_message_students_2(update: Update, context: CallbackContext) -> str:
+def admin_message_students_2(update: Update, context: CallbackContext) -> Optional[str]:
     group_type = update.message.text
     if group_type not in get_group_types(context.dispatcher.bot_data['students']):
         update.message.reply_text('Выберите тип группы')
+        return None
     else:
         context.user_data['admin_message'] = {}
         context.user_data['admin_message']['group_type'] = group_type
