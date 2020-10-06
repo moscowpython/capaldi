@@ -5,6 +5,7 @@ from telegram.ext import CallbackContext, ConversationHandler, MessageHandler, F
 
 from learn_python_bot.decorators import for_admins_only
 from learn_python_bot.utils.students import get_group_types
+from learn_python_bot.utils.telegram import send_message
 
 
 def get_admin_keyboard() -> ReplyKeyboardMarkup:
@@ -71,9 +72,10 @@ def admin_message_students_send(update: Update, context: CallbackContext) -> Con
     update.message.reply_text('Рассылка начата', reply_markup=ReplyKeyboardRemove())
     for student in context.user_data['admin_message']['recipients']:
         if student.telegram_chat_id:
-            context.bot.send_message(
+            send_message(
                 chat_id=student.telegram_chat_id,
-                text=context.user_data['admin_message']['text'],
+                message=context.user_data['admin_message']['text'],
+                ignore_errors_on_send=True
             )
     update.message.reply_text('Рассылка завершена', reply_markup=get_admin_keyboard())
     return ConversationHandler.END

@@ -67,11 +67,11 @@ class AirtableAPI(NamedTuple):
         raw_curators = raw_curators_data.get('records', []) if raw_curators_data else []
         return [
             Curator(
-                name=c['fields']['Куратор'],
+                name=c['fields'].get('Куратор'),
                 telegram_account=c['fields'].get('Telegram'),
                 telegram_chat_id=c['fields'].get('chat_id'),
                 airtable_id=c['id'],
-            ) for c in raw_curators
+            ) for c in raw_curators if c['fields'].get('Куратор')
         ]
 
     def fetch_events_data(self) -> List[Mapping[str, Any]]:

@@ -8,13 +8,13 @@ def process_feedback(update: Update, context: CallbackContext) -> None:
     answers_map = {'yay': 1, 'fuu': -1, 'meh': 0}
     answers_text = {'yay': 'понравилась', 'fuu': 'не понравилась', 'meh': 'не очень понравилась'}
     student = get_student_by_tg_nickname(
-        update._effective_chat.username,
+        update.effective_chat.username,
         context.bot_data['students'],
     )
     if student is None:
         update.message.reply_text(
             f'Кажется, ты не учишься на текущем наборе. Если это не так, то покажите '
-            f'это сообщение кому-нибудь из администрации ({update._effective_chat.username})',
+            f'это сообщение кому-нибудь из администрации ({update.effective_chat.username})',
         )
         return None
     raw_response_text = update.callback_query.data

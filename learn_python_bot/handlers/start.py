@@ -14,7 +14,7 @@ def start(update: Update, context: CallbackContext, student: Student) -> None:
         return None
     new_student = context.bot_data['airtable_api'].set_telegram_chat_id(
         student.airtable_id,
-        update._effective_chat.id,
+        update.effective_chat.id,
     )
     if new_student:
         context.bot_data['students'].remove(student)
