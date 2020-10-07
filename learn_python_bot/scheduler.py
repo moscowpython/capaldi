@@ -33,7 +33,7 @@ def ask_curators_to_report_job(week_num: int, context: telegram.ext.CallbackCont
 
 
 def send_report_to_orgs_job(week_num: int, context: telegram.ext.CallbackContext):
-    logger.info('[SCHEDULER] starting curators reports feedback')
+    logger.info('[SCHEDULER] starting orgs reports')
     send_report_to_orgs(week_num)
 
 
