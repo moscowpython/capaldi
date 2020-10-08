@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def for_students_only(wrapped: Callable, instance: Any, args: Any, kwargs: Any) -> Any:
     update, context = args[:2]
     student = get_student_by_tg_nickname(
-        update._effective_chat.username,
+        update.effective_chat.username,
         context.bot_data['students'],
     )
     if student is None:
