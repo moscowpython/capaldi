@@ -32,6 +32,11 @@ def ask_curators_to_report_job(week_num: int, context: telegram.ext.CallbackCont
     ask_curators_to_report(week_num)
 
 
+def send_report_to_orgs_job(week_num: int, context: telegram.ext.CallbackContext):
+    logger.info('[SCHEDULER] starting orgs reports')
+    send_report_to_orgs(week_num)
+
+
 def init_event_scheduler(updater: Updater, event: Event):
     now = datetime.datetime.now(pytz.timezone('Europe/Moscow'))
 
@@ -71,7 +76,7 @@ def init_event_scheduler(updater: Updater, event: Event):
         # Orgs report
         logger.info(f'[SCHEDULER] Planning orgs report for'
                     f'event `{event.title}` at {week_and_day_after}')
-        updater.job_queue.run_once(partial(send_report_to_orgs, event.week_num),
+        updater.job_queue.run_once(partial(send_report_to_orgs_job, event.week_num),
                                    week_and_day_after,
                                    name=orgs_reports_event_name)
 
