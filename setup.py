@@ -38,7 +38,7 @@ setup(
     author_email='melevir@gmail.com',
     install_requires=[
         'setuptools',
-        'python-telegram-bot[socks]>=12.7',
+        'python-telegram-bot[socks]==12.7',
         'click>=7.1.2',
         'requests>=2.23.0',
         'dateparser>=0.7.4',
