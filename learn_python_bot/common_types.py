@@ -67,6 +67,7 @@ class Curator(NamedTuple):
 
 class Course(NamedTuple):
     airtable_id: str
+    airtable_pk: int
     course_name: str
     course_number: str
     course_start_date: datetime.datetime
