@@ -3,7 +3,7 @@ from typing import List, Any, Mapping, NamedTuple, Optional
 from dateparser import parse
 from requests import get, patch, post
 
-from learn_python_bot.common_types import Student, Event, Curator
+from learn_python_bot.common_types import Student, Event, Curator, Course
 from learn_python_bot.config import (AIRTABLE_VIEW_NAME, AIRTABLE_RATE_LIMIT_STATUS_CODE,
                                      AIRTABLE_API_KEY, AIRTABLE_BASE_ID)
 
@@ -20,6 +20,10 @@ class AirtableAPI(NamedTuple):
             airtable_base_id=AIRTABLE_BASE_ID,
             students_list_view_name=AIRTABLE_VIEW_NAME,
         )
+    
+    @staticmethod
+    def _extract_course_recourd(raw_airtable_record: Mapping[str, Any]) -> Course:
+        course = raw_airtable_record
 
     @staticmethod
     def _extract_student_record(raw_airtable_record: Mapping[str, Any]) -> Student:
@@ -59,6 +63,13 @@ class AirtableAPI(NamedTuple):
         raw_airtable_data = self._make_airtable_request(
             'current_course',
             params={'filterByFormula': 'is_current_course_student=1'},
+        )
+        return raw_airtable_data.get('records', []) if raw_airtable_data else []
+    
+    def fetch_course_data(self) -> List[Mapping[str, Any]]:
+        raw_airtable_data = self._make_airtable_request(
+            'course',
+            params={'filterByFormula': 'is_current=1'},
         )
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 
