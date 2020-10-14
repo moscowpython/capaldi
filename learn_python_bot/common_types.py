@@ -63,3 +63,11 @@ class Curator(NamedTuple):
     telegram_account: Optional[str]
     telegram_chat_id: Optional[str]
     airtable_id: str
+
+
+class Course(NamedTuple):
+    airtable_id: str
+    course_name: str
+    course_number: str
+    course_start_date: datetime.datetime
+    course_end_date: datetime.datetime
