@@ -70,5 +70,5 @@ class Course(NamedTuple):
     airtable_pk: int
     course_name: str
     course_number: str
-    course_start_date: datetime.datetime
-    course_end_date: datetime.datetime
+    course_start_date: datetime.date
+    course_end_date: datetime.date
