@@ -3,14 +3,13 @@ from typing import Any, Callable
 
 import wrapt
 
-from learn_python_bot.config import TELEGRAM_ADMINS
+from learn_python_bot.config import TELEGRAM_ADMINS, LOG_LEVEL
 from learn_python_bot.typical_responses import not_a_student
 from learn_python_bot.utils.students import get_student_by_tg_nickname
 
-
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG,
+    level=getattr(logging, LOG_LEVEL),
 )
 logger = logging.getLogger(__name__)
 

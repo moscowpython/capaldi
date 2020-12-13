@@ -13,7 +13,7 @@ from sentry_sdk import init as init_setry, capture_exception, configure_scope
 
 from learn_python_bot import __version__
 from learn_python_bot.config import (TELEGRAM_PROXY_SETTINGS, TELEGRAM_BOT_TOKEN, REDIS_URL,
-                                     SENTRY_URL)
+                                     SENTRY_URL, LOG_LEVEL)
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.decorators import for_admins_only
 from learn_python_bot.handlers.admin import admin_keyboard, admin_show_students, get_admin_announce_command_handler
@@ -24,7 +24,7 @@ from learn_python_bot.scheduler import init_schedulers
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG,
+    level=getattr(logging, LOG_LEVEL),
 )
 logger = logging.getLogger(__name__)
 

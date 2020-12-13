@@ -12,8 +12,13 @@ from learn_python_bot.bin.notify_on_tomorrow_event import main as notify_on_tomo
 from learn_python_bot.bin.ask_for_feedback import ask_students_for_feedback
 from learn_python_bot.bin.ask_curators_to_report import ask_curators_to_report
 from learn_python_bot.bin.send_stat_report import send_report_to_orgs
+from learn_python_bot.config import LOG_LEVEL
 from learn_python_bot.common_types import Event
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=getattr(logging, LOG_LEVEL),
+)
 logger = logging.getLogger(__name__)
 
 

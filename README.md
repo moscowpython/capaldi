@@ -31,3 +31,9 @@ Then run one of following commands:
 - `lp_notify_on_tomorrow_event` – notify students if there is course event tomorrow.
 
 Run any command with `--help` to gel params list.
+
+## Run for development
+```terminal
+cd learn_python_bot
+PYTHONPATH=.. python bot.py
+```

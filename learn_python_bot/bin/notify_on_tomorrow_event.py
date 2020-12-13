@@ -3,8 +3,13 @@ import logging
 
 from learn_python_bot.api.airtable import AirtableAPI
 from learn_python_bot.common_types import Event
+from learn_python_bot.config import LOG_LEVEL
 from learn_python_bot.utils.telegram import send_message
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=getattr(logging, LOG_LEVEL),
+)
 logger = logging.getLogger(__name__)
 
 

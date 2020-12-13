@@ -23,3 +23,5 @@ SENTRY_URL = os.environ.get('SENTRY_URL')
 
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
 AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
+
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
