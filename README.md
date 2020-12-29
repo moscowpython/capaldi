@@ -33,6 +33,7 @@ Then run one of following commands:
 Run any command with `--help` to gel params list.
 
 ## Run for development
+
 ```terminal
 cd learn_python_bot
 PYTHONPATH=.. python bot.py
