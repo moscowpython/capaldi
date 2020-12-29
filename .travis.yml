@@ -4,7 +4,7 @@ python:
   - "3.8"
 install:
   - pip install -r requirements.txt
-  - gem install mdl
+  - gem install chef-utils:16.6.14 mdl
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
