@@ -62,6 +62,14 @@ class AirtableAPI(NamedTuple):
         )
         return raw_airtable_data.get('records', []) if raw_airtable_data else []
 
+    def fetch_current_course(self) -> str:
+        raw_airtable_data = self._make_airtable_request(
+            'course',
+            params={'filterByFormula': 'is_current=1'},
+        )
+        records = raw_airtable_data.get('records', []) if raw_airtable_data else None
+        return records[0].get('id', None) if records else None
+
     def fetch_curators(self) -> List[Curator]:
         raw_curators_data = self._make_airtable_request('curators')
         raw_curators = raw_curators_data.get('records', []) if raw_curators_data else []

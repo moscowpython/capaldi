@@ -26,12 +26,14 @@ class FeedbackStatistics(NamedTuple):
 def fetch_feedback_data_from_api(course_week_num: int) -> FeedbackStatistics:
     api = AirtableAPI.get_default_api()
     raw_stat = api.fetch_feedback_for_week(course_week_num)
-    return aggregate_feedback_data(raw_stat)
+    current_course = api.fetch_current_course()
+    return aggregate_feedback_data(raw_stat, current_course)
 
 
-def aggregate_feedback_data(raw_stat: List[Mapping[str, Any]]) -> FeedbackStatistics:
+def aggregate_feedback_data(raw_stat: List[Mapping[str, Any]], current_course: str) -> FeedbackStatistics:
     week_num = raw_stat[0]['fields']['week_num']
-    liked = sum(1 for r in raw_stat if r['fields'].get('score') == 1)
+    raw_stat_filtered_by_course = [r for r in raw_stat if r['fields'].get('course_number')[0] == current_course]
+    liked = sum(1 for r in raw_stat_filtered_by_course if r['fields'].get('score') == 1)
     disliked = len(raw_stat) - liked
     return FeedbackStatistics(week_num=week_num, liked=liked, disliked=disliked)
 
