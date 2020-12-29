@@ -75,7 +75,7 @@ def admin_message_students_send(update: Update, context: CallbackContext) -> Con
             send_message(
                 chat_id=student.telegram_chat_id,
                 message=context.user_data['admin_message']['text'],
-                ignore_errors_on_send=True
+                ignore_errors_on_send=True,
             )
     update.message.reply_text('Рассылка завершена', reply_markup=get_admin_keyboard())
     return ConversationHandler.END

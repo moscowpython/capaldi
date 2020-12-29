@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update -qq && apt-get upgrade -qq && \
