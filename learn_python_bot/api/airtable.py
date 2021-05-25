@@ -132,7 +132,7 @@ class AirtableAPI(NamedTuple):
     def fetch_feedback_for_week(self, course_week_num: int) -> List[Mapping[str, Any]]:
         raw_airtable_data = self._make_airtable_request(
             'weekly_feedback',
-            params={'filterByFormula': f'week_num={course_week_num}'},
+            params={'filterByFormula': f'AND(is_current_course_student=1, week_num={course_week_num})'},
         )
 
         return raw_airtable_data['records'] if raw_airtable_data else []
