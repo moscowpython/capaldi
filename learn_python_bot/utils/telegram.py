@@ -1,5 +1,5 @@
 from telegram import ReplyMarkup, ParseMode
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Unauthorized
 
 from learn_python_bot.api.telegram import get_bot
 from learn_python_bot.config import TELEGRAM_BOT_TOKEN, TELEGRAM_PROXY_SETTINGS
@@ -21,6 +21,6 @@ def send_message(
             reply_markup=reply_markup,
             parse_mode=ParseMode.MARKDOWN_V2 if parse_markdown else None,
         )
-    except BadRequest:
+    except (BadRequest, Unauthorized):
         if not ignore_errors_on_send:
             raise

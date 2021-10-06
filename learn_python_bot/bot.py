@@ -36,7 +36,7 @@ def error(update: Update, context: CallbackContext) -> None:
     logger.warning('Update "%s" caused error "%s"', update, context.error)
     if SENTRY_URL:
         with configure_scope() as scope:
-            if update.effective_chat:
+            if update and update.effective_chat:
                 scope.user = {
                     'username': update.effective_chat.username,
                     'chat_id': update.effective_chat.id,
