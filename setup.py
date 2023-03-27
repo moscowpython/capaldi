@@ -44,7 +44,7 @@ setup(
         'dateparser>=0.7.4',
         'wrapt==1.12.1',
         'sentry-sdk>=0.14.4',
-        'redis==3.5.3',
+        'redis==4.5.3',
         'pytz==2020.1',
         'prettytable==0.7.2',
     ],
