@@ -1,6 +1,6 @@
 python-telegram-bot[socks]==13.7
 click==7.1.2
-requests==2.26.0
+requests==2.31.0
 dateparser==0.7.6
 wrapt==1.12.1
 sentry-sdk==1.4.3
